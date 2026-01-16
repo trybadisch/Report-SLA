@@ -1,0 +1,36 @@
+<!doctype html>
+<html>
+<head>
+  <link rel="stylesheet" href="theme.css">
+  <meta charset="utf-8">
+  <title>H1 Report SLA</title>
+  </head>
+<body class="ext-doc popup-body">
+  <div class="wrap">
+    <h1>H1 Report SLA</h1>
+    
+    <label>
+      Program
+      <select id="programSelect" style="width:100%"></select>
+    </label>
+
+    <button id="managePrograms" class="secondary">Manage programs</button>
+
+    <textarea
+      id="programEditor"
+      style="display:none; width:100%; height:120px; margin-top:8px;"
+      placeholder="One inbox handle per line&#10;Example:&#10;my-program-inbox">
+    </textarea>
+
+    <button id="savePrograms" style="display:none">Save programs</button>
+  </div>
+
+  <div class="wrap">
+    <input id="start" type="date" />
+    <input id="end" type="date" />
+
+    <button id="go">Scrape</button>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>
