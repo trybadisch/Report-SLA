@@ -74,7 +74,8 @@ function extractAllActionsFromTimeline(json, reportId) {
       reportId: String(reportId),
       actionType: n.type || "N/A",
       actor: n.actor?.username || "N/A",
-      updatedAt: n.updated_at || "N/A"
+      createdAt: n.created_at || "N/A",
+      internal: n.internal
     };
   });
 }
@@ -183,12 +184,50 @@ function toDDMMYY(dateStr) {
   return `${d}-${m}-${y.slice(2)}`;
 }
 
+
+
 function actionsToCSV(rows) {
+
+  const FILTERED_ACTIONS = new Set([
+    "ActivitiesReportRetestApproved",
+    "ActivitiesUserCompletedRetest",
+    "ActivitiesBugRetesting",
+    "ActivitiesBountyAwarded",
+    "ActivitiesReportOrganizationInboxesUpdated",
+    "ActivitiesReportVulnerabilityTypesUpdated",
+    "ActivitiesReportSeverityUpdated",
+    "ActivitiesReportCollaboratorJoined",
+    "ActivitiesReportCollaboratorInvited",
+    "ActivitiesChangedScope",
+    "ActivitiesNmiReminderComment",
+    "ActivitiesReportTitleUpdated",
+    "ActivitiesReportVulnerabilityInformationUpdated"
+  ]);
+
+  const normalized = rows
+    .filter(r => !FILTERED_ACTIONS.has(r.actionType))
+    .map(r => {
+      let actionType = r.actionType;
+
+      if (actionType === "ActivitiesComment") {
+        if (r.internal === true) {
+          actionType = "ActivitiesCommentInternal";
+        } else if (r.internal === false) {
+          actionType = "ActivitiesCommentExternal";
+        }
+      }
+
+      return {
+        ...r,
+        actionType
+      };
+    });
+
   const header = [
     "report_id",
     "action_type",
     "actor_username",
-    "updated_at"
+    "created_at"
   ];
 
   const escapeCSV = v =>
@@ -196,12 +235,12 @@ function actionsToCSV(rows) {
 
   const lines = [
     header.join(","),
-    ...rows.map(r =>
+    ...normalized.map(r =>
       [
         r.reportId,
         r.actionType,
         r.actor,
-        r.updatedAt
+        r.createdAt
       ].map(escapeCSV).join(",")
     )
   ];
