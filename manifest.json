@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Report SLA",
-  "version": "1.0.0",
+  "version": "1.1.1",
   "description": "Scrapes actions taken on HackerOne reports within a specified inbox and date range",
   "icons": {
     "16": "icons/icon_16.png",
